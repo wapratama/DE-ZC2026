@@ -13,6 +13,11 @@ What's the version of `pip` in the image?
 - 24.2.1
 - 23.3.1
 
+### Answer of Question 1
+
+![solution_Q01](image.png)
+
+The answer is **25.3**
 
 ## Question 2. Understanding Docker networking and docker-compose
 
