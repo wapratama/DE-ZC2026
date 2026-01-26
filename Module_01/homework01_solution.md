@@ -15,7 +15,7 @@ What's the version of `pip` in the image?
 
 ### Answer of Question 1
 
-![solution_Q01](Q01_answer.png)
+![solution_Q01](image/Q01_answer.png)
 
 The answer is **25.3**
 
@@ -102,7 +102,7 @@ For the trips in November 2025 (lpep_pickup_datetime between '2025-11-01' and '2
 
 ### Answer of Question 3
 
-![solution_Q03](Q03_answer.png)
+![solution_Q03](image/Q03_answer.png)
 
 The answer is **8,007**
 
@@ -119,7 +119,7 @@ Use the pick up time for your calculations.
 
 ### Answer of Question 4
 
-![solution_Q04](Q04_answer.png)
+![solution_Q04](image/Q04_answer.png)
 
 The answer is **2025-11-14**
 
@@ -134,7 +134,7 @@ Which was the pickup zone with the largest `total_amount` (sum of all trips) on 
 
 ### Answer of Question 5
 
-![solution_Q05](Q05_answer.png)
+![solution_Q05](image/Q05_answer.png)
 
 The answer is **East Harlem North**
 
@@ -151,7 +151,7 @@ Note: it's `tip` , not `trip`. We need the name of the zone, not the ID.
 
 ### Answer of Question 6
 
-![solution_Q06](Q06_answer.png)
+![solution_Q06](image/Q06_answer.png)
 
 The answer is **Yorkville West**
 
