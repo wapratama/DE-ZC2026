@@ -15,7 +15,7 @@ What's the version of `pip` in the image?
 
 ### Answer of Question 1
 
-![solution_Q01](image.png)
+![solution_Q01](Q01_answer.png)
 
 The answer is **25.3**
 
@@ -63,6 +63,19 @@ volumes:
 
 If multiple answers are correct, select any 
 
+### Answer of Question 2
+
+Based on yaml file:
+- Service name: db
+- Container name: postgres
+- Internal port: 5432 (default postgres port)
+- External port (host): 5433
+
+The preferred answer is **db:5432**, but **postgres:5432** also considered accepted in some system because `postgres` is the container name. So my answers are:
+- **postgres:5432**
+- **db:5432**
+
+PS: *I still need to learn more about this, because it's actually explanation from AI*
 
 ## Prepare the Data
 
@@ -87,6 +100,9 @@ For the trips in November 2025 (lpep_pickup_datetime between '2025-11-01' and '2
 - 8,254
 - 8,421
 
+### Answer of Question 3
+
+The answer is **???**
 
 ## Question 4. Longest trip for each day
 
@@ -99,6 +115,10 @@ Use the pick up time for your calculations.
 - 2025-11-23
 - 2025-11-25
 
+### Answer of Question 4
+
+
+The answer is **???**
 
 ## Question 5. Biggest pickup zone
 
@@ -109,6 +129,10 @@ Which was the pickup zone with the largest `total_amount` (sum of all trips) on 
 - Morningside Heights
 - Forest Hills
 
+### Answer of Question 5
+
+
+The answer is **???**
 
 ## Question 6. Largest tip
 
@@ -121,6 +145,10 @@ Note: it's `tip` , not `trip`. We need the name of the zone, not the ID.
 - East Harlem North
 - LaGuardia Airport
 
+### Answer of Question 6
+
+
+The answer is **???**
 
 ## Terraform
 
@@ -147,6 +175,10 @@ Answers:
 - terraform init, terraform apply -auto-approve, terraform destroy
 - terraform import, terraform apply -y, terraform rm
 
+### Answer of Question 7
+
+
+The answer is **???**
 
 ## Submitting the solutions
 
