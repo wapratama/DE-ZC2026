@@ -75,7 +75,7 @@ The preferred answer is **db:5432**, but **postgres:5432** also considered accep
 - **postgres:5432**
 - **db:5432**
 
-PS: *I still need to learn more about this, because it's actually explanation from AI*
+PS: *I still need to learn more about this, because **postgres:5432** explanation is from AI*
 
 ## Prepare the Data
 
@@ -102,7 +102,9 @@ For the trips in November 2025 (lpep_pickup_datetime between '2025-11-01' and '2
 
 ### Answer of Question 3
 
-The answer is **???**
+![solution_Q03](Q03_answer.png)
+
+The answer is **8,007**
 
 ## Question 4. Longest trip for each day
 
@@ -117,8 +119,9 @@ Use the pick up time for your calculations.
 
 ### Answer of Question 4
 
+![solution_Q04](Q04_answer.png)
 
-The answer is **???**
+The answer is **2025-11-14**
 
 ## Question 5. Biggest pickup zone
 
@@ -131,8 +134,9 @@ Which was the pickup zone with the largest `total_amount` (sum of all trips) on 
 
 ### Answer of Question 5
 
+![solution_Q05](Q05_answer.png)
 
-The answer is **???**
+The answer is **East Harlem North**
 
 ## Question 6. Largest tip
 
@@ -147,8 +151,9 @@ Note: it's `tip` , not `trip`. We need the name of the zone, not the ID.
 
 ### Answer of Question 6
 
+![solution_Q06](Q06_answer.png)
 
-The answer is **???**
+The answer is **Yorkville West**
 
 ## Terraform
 
@@ -177,10 +182,9 @@ Answers:
 
 ### Answer of Question 7
 
+Terraform lifecycle:
+- Initialize (`init`) the working directory and providers
+- Generate & execute (`apply`) infrastructure changes, `-auto-approve` skips confirmation and executes immediately
+- Cleanup (`destroy`) managed infrastructure
 
-The answer is **???**
-
-## Submitting the solutions
-
-* Form for submitting: https://courses.datatalks.club/de-zoomcamp-2026/homework/hw1
-
+The answer is **terraform init, terraform apply -auto-approve, terraform destroy**
