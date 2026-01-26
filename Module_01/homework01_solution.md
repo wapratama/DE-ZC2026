@@ -71,11 +71,7 @@ Based on yaml file:
 - Internal port: 5432 (default postgres port)
 - External port (host): 5433
 
-The preferred answer is **db:5432**, but **postgres:5432** also considered accepted in some system because `postgres` is the container name. So my answers are:
-- **postgres:5432**
-- **db:5432**
-
-PS: *I still need to learn more about this, because **postgres:5432** explanation is from AI*
+The preferred answer is **db:5432**
 
 ## Prepare the Data
 
