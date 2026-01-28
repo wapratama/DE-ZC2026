@@ -2,8 +2,8 @@
 
 How to start:
 
-1. Open the Project in VS Code
-2. Navigate to your project root
+1. Open the Project in VS Code 
+2. Navigate to your project root (in this case: `cd Module_01`)
 3. Start PostgreSQL (MANDATORY)
 
     In VS Code terminal: 
@@ -19,7 +19,7 @@ How to stop:
 1. Simply close the browser tab of `http://localhost:8085`
 2. Stop Docker Containers
     
-    In VS Code Terminal, from the project root:
+    In VS Code Terminal, from the project root (in this case: `cd Module_01`):
     ```Bash
     docker compose down
     ```
