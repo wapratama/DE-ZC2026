@@ -16,6 +16,8 @@ serving_dir
 !week_6_stream_processing/avro_example/data/rides.csv
 *.parquet
 *.csv
+*/keys/*
+variables.tf
 
 # *2. Python gitignore*
 # https://github.com/github/gitignore/blob/main/Python.gitignore
