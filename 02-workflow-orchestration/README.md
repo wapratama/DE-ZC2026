@@ -73,7 +73,7 @@ Actually, my disk is full for this Module, so I run these :
 
 ```bash
 docker system prune -a --volumes # remove ALL Docker data (Image, Containers, Build Cache)
-docker volume prune # remove all unused Local Volumes
+docker volume prune -a # remove all unused Local Volumes
 ```
 
 Verify Disk is freed with run:

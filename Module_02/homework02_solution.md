@@ -28,9 +28,9 @@ Complete the quiz shown below. It's a set of 6 multiple-choice questions to test
 - 364.7 MiB
 - 692.6 MiB
 
-    #### Answer of Question 1
+    #### **Answer of Question 1**
 
-    We need additional command to see the size file (in MB):
+    We need additional command to see the file size (in MB):
 
     ``` yaml
     - id: extract
@@ -41,7 +41,8 @@ Complete the quiz shown below. It's a set of 6 multiple-choice questions to test
         type: io.kestra.plugin.core.runner.Process
         commands:
         - wget -qO- https://github.com/DataTalksClub/nyc-tlc-data/releases/download/{{inputs.taxi}}/{{render(vars.file)}}.gz | gunzip > {{render(vars.file)}}
-        - du -b {{render(vars.file)}} | awk '{printf "%.1f MiB\n", $1/1048576}' # Additional command to see file list and size
+        # Additional command to see file list and size:
+        - du -b {{render(vars.file)}} | awk '{printf "%.1f MiB\n", $1/1048576}'
     ```
 
     The result in Kestra Logs:
@@ -55,11 +56,11 @@ Complete the quiz shown below. It's a set of 6 multiple-choice questions to test
 - `green_tripdata_04_2020.csv`
 - `green_tripdata_2020.csv`
 
-    #### Answer of Question 2
+    #### **Answer of Question 2**
 
     Based on the expressed variables in file: `{{inputs.taxi}}_tripdata_{{inputs.year}}-{{inputs.month}}.csv`
     - `{{inputs.taxi}}` = the taxi type (for this case is `green`)
-    - `tripdata` is a default variable
+    - `tripdata` is a default
     - `{{inputs.year}}` = year of the taxi data (for this case is `2020`)
     - `{{inputs.month}}` = month of the taxi data (for this case is `04`)
 
@@ -71,20 +72,20 @@ Complete the quiz shown below. It's a set of 6 multiple-choice questions to test
 - 18,324,219
 - 29,430,127
 
-    #### Answer of Question 3
+    #### **Answer of Question 3**
 
-    Run the query in PostgresSQL:
+    After required dataset loaded in PostgresSQL, run this query :
     ```sql
     SELECT COUNT(*) AS total_rows
     FROM public.yellow_tripdata 
     WHERE EXTRACT(YEAR FROM tpep_pickup_datetime) = 2020;
     ```
 
-    The result is xxx rows:
+    The result is 24,648,235 rows:
 
     ![Q03_Solution](image/Q03_answer.png)
 
-    The answer is **24,648,499** rows
+    The closest answer is **24,648,499** rows
 
 4) How many rows are there for the `Green` Taxi data for all CSV files in the year 2020?
 - 5,327,301
@@ -92,9 +93,9 @@ Complete the quiz shown below. It's a set of 6 multiple-choice questions to test
 - 1,734,051
 - 1,342,034
 
-    #### Answer of Question 4
+    #### **Answer of Question 4**
 
-    Run the query in PostgresSQL:
+    After required dataset loaded in PostgresSQL, run this query :
     ```sql
     SELECT COUNT(*) AS total_rows
     FROM public.green_tripdata 
@@ -113,9 +114,9 @@ Complete the quiz shown below. It's a set of 6 multiple-choice questions to test
 - 1,925,152
 - 2,561,031
 
-    #### Answer of Question 5
+    #### **Answer of Question 5**
 
-    Run the query in PostgresSQL:
+    After required dataset loaded in PostgresSQL, run this query :
     ```sql
     SELECT COUNT(*) AS total_rows
     FROM public.yellow_tripdata
@@ -158,8 +159,3 @@ Complete the quiz shown below. It's a set of 6 multiple-choice questions to test
     Source: https://kestra.io/docs/workflow-components/triggers/schedule-trigger
 
     The answer is "**Add a `timezone` property set to `America/New_York` in the `Schedule` trigger configuration**"
-
-## Submitting the solutions
-
-* Form for submitting: https://courses.datatalks.club/de-zoomcamp-2026/homework/hw2
-* Due date: 3 February 2026 06:59 (local time)
