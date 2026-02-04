@@ -53,7 +53,10 @@ Code: `05_postgres_taxi_scheduled.yaml`
 
 ### Kestra & GCP 
 Code: 
-- Setup Google Cloud Platform (GCP): `06_gcp_kv.yaml`
+- Setup Google Cloud Platform (GCP): `06_gcp_kv.yaml`. More on: 
+     - https://kestra.io/docs/how-to-guides/google-credentials
+     - https://kestra.io/docs/concepts/kv-store
+     - https://kestra.io/docs/concepts/secret
 - Create GCP Resources (bucket and BigQuery): `07_gcp_setup.yaml`
 - Workflow:
     - Load Taxi Data to BigQuery: `08_gcp_taxi.yaml`
@@ -76,6 +79,7 @@ docker system prune -a --volumes # remove ALL Docker data (Image, Containers, Bu
 docker volume prune -a # remove all unused Local Volumes
 ```
 
+It is generally safe to use in development and testing environments but requires caution in production.
 Verify Disk is freed with run:
 ```bash
 docker system df

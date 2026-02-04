@@ -1,4 +1,19 @@
-# Install Terraform
+# Docker
+Everything will be run on VS Code terminal using bash:
+1. Check your installed docker, run: `docker`
+2. Create and run container from image, run: `docker run [image name]`
+3. Create Docker YAML file, python code for download data, and check dependencies file (pyproject.toml)
+4. Activate using: `docker compose up`
+5. Verify running container: `docker ps`
+6. Initialize Python Environment (uv): `uv sync`. Also if needed, install dependencies: `uv add pandas pyarrow sqlalchemy psycopg2-binary requests`
+7. Download data: `uv run python [your/scripts/to/download_data.py]`
+8. Load Data into PostgreSQL: `uv run python [your/scripts/to/load_to_postgres.py]`
+9. Access postgresSQL using PgAdmin (http://localhost:8085) and verify database and tables exist. Start inspect data and querying.
+10. Deactivate using: `docker compose down`
+
+Notes: Docker runs the database, uv runs Python, VS Code is just the control panel.
+
+# Terraform
 *Official HashiCorp Method*
 
 We will (All inside bash):
@@ -115,7 +130,7 @@ In my case, I use GCP (Google Cloud Platform)
             }
         ```
 
-# Terraform Variables
+## Terraform Variables
 For some reason, I won't share my `variables.tf` file in this repo. But I will share the modified version, so here it is the complete code. For this course, edit the one inside the square brackets "[ ]".
 ```
 variable "credentials" {
@@ -152,4 +167,12 @@ variable "gcs_storage_class" {
     description = "The storage class of the GCS bucket"
     default     = "STANDARD"
 }
+```
+
+# NOTES
+Complete Course: https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/01-docker-terraform/README.md
+
+Tips to shorter working directory information in the terminal using bash:
+```bash
+PS1="> "
 ```
