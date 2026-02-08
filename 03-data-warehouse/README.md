@@ -1,67 +1,52 @@
 # Data Warehouse with BigQuery
 
-```sql
--- Query public available table
-SELECT station_id, name FROM
-    bigquery-public-data.new_york_citibike.citibike_stations
-LIMIT 100;
+Important resource & link to learn more about Google Bigquery.
 
+## Bigquery
+BigQuery is a fully managed, AI-ready data platform that helps you manage and analyze your data with built-in features like machine learning, search, geospatial analysis, and business intelligence. 
 
--- Creating external table referring to gcs path
-CREATE OR REPLACE EXTERNAL TABLE `taxi-rides-ny.nytaxi.external_yellow_tripdata`
-OPTIONS (
-  format = 'CSV',
-  uris = ['gs://nyc-tl-data/trip data/yellow_tripdata_2019-*.csv', 'gs://nyc-tl-data/trip data/yellow_tripdata_2020-*.csv']
-);
+Table types
+- Standard BigQuery tables: structured data stored in BigQuery storage.
+- External tables: tables that reference data stored outside BigQuery.
+- Views: logical tables that are created by using a SQL query.
 
--- Check yellow trip data
-SELECT * FROM taxi-rides-ny.nytaxi.external_yellow_tripdata limit 10;
+Resources:
+1. Overview: https://cloud.google.com/bigquery/docs/how-to or https://docs.cloud.google.com/bigquery/docs/introduction
+2. Architecture: https://panoply.io/data-warehouse-guide/bigquery-architecture/
+3. Storage overview: https://docs.cloud.google.com/bigquery/docs/storage_overview
+4. Tables: https://docs.cloud.google.com/bigquery/docs/tables-intro
+5. External Tables: https://docs.cloud.google.com/bigquery/docs/external-tables
+6. Partitioned Table: https://cloud.google.com/bigquery/docs/partitioned-tables
+7. Clustered Table: https://docs.cloud.google.com/bigquery/docs/clustered-tables
+8. The quotas and system limits: https://docs.cloud.google.com/bigquery/quotas
+9. Pricing: https://cloud.google.com/bigquery/pricing
 
--- Create a non partitioned table from external table
-CREATE OR REPLACE TABLE taxi-rides-ny.nytaxi.yellow_tripdata_non_partitioned AS
-SELECT * FROM taxi-rides-ny.nytaxi.external_yellow_tripdata;
+## Direct Load Files to GCS
+**NOTES FROM DE ZOOMCAMP REPO**: Quick hack to load files directly to GCS, without Airflow. Downloads csv files from https://nyc-tlc.s3.amazonaws.com/trip+data/ and uploads them to your Cloud Storage Account as parquet files.
 
-
--- Create a partitioned table from external table
-CREATE OR REPLACE TABLE taxi-rides-ny.nytaxi.yellow_tripdata_partitioned
-PARTITION BY
-  DATE(tpep_pickup_datetime) AS
-SELECT * FROM taxi-rides-ny.nytaxi.external_yellow_tripdata;
-
--- Impact of partition
--- Scanning 1.6GB of data
-SELECT DISTINCT(VendorID)
-FROM taxi-rides-ny.nytaxi.yellow_tripdata_non_partitioned
-WHERE DATE(tpep_pickup_datetime) BETWEEN '2019-06-01' AND '2019-06-30';
-
--- Scanning ~106 MB of DATA
-SELECT DISTINCT(VendorID)
-FROM taxi-rides-ny.nytaxi.yellow_tripdata_partitioned
-WHERE DATE(tpep_pickup_datetime) BETWEEN '2019-06-01' AND '2019-06-30';
-
--- Let's look into the partitions
-SELECT table_name, partition_id, total_rows
-FROM `nytaxi.INFORMATION_SCHEMA.PARTITIONS`
-WHERE table_name = 'yellow_tripdata_partitioned'
-ORDER BY total_rows DESC;
-
--- Creating a partition and cluster table
-CREATE OR REPLACE TABLE taxi-rides-ny.nytaxi.yellow_tripdata_partitioned_clustered
-PARTITION BY DATE(tpep_pickup_datetime)
-CLUSTER BY VendorID AS
-SELECT * FROM taxi-rides-ny.nytaxi.external_yellow_tripdata;
-
--- Query scans 1.1 GB
-SELECT count(*) as trips
-FROM taxi-rides-ny.nytaxi.yellow_tripdata_partitioned
-WHERE DATE(tpep_pickup_datetime) BETWEEN '2019-06-01' AND '2020-12-31'
-  AND VendorID=1;
-
--- Query scans 864.5 MB
-SELECT count(*) as trips
-FROM taxi-rides-ny.nytaxi.yellow_tripdata_partitioned_clustered
-WHERE DATE(tpep_pickup_datetime) BETWEEN '2019-06-01' AND '2020-12-31'
-  AND VendorID=1;
+Install pre-reqs (more info in web_to_gcs.py script). Run: 
+```python 
+python web_to_gcs.py
 ```
+Resources: 
+1. https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/03-data-warehouse/extras
+2. https://docs.cloud.google.com/storage/docs/uploading-objects#storage-upload-object-python
 
-Complete course: https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/03-data-warehouse
+## Machine Learning in Bigquery
+1. Intro: https://docs.cloud.google.com/bigquery/docs/bqml-introduction
+2. Create ML model using SQL: https://docs.cloud.google.com/bigquery/docs/create-machine-learning-model
+5. Export model: https://docs.cloud.google.com/bigquery/docs/export-model-tutorial
+5. GenAi in Bigquery: https://docs.cloud.google.com/bigquery/docs/generative-ai-overview
+
+## Dremel
+Dremel is Google’s internal data analysis and exploration system. It is designed for interactive (i.e. fast) analysis of read-only nested data. Its design builds on ideas from parallel database management systems as well as web search.
+
+Resources:
+1. Dremel: Interactive Analysis of Web-Scale Datasets: https://research.google/pubs/pub36632/
+2. A Look at Dremel: http://www.goldsborough.me/distributed-systems/2019/05/18/21-09-00-a_look_at_dremel/
+
+
+## Additional
+Some inspiration: https://dev.to/pizofreude
+
+Keep learning !!!
