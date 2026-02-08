@@ -20,9 +20,11 @@ Resources:
 7. Clustered Table: https://docs.cloud.google.com/bigquery/docs/clustered-tables
 8. The quotas and system limits: https://docs.cloud.google.com/bigquery/quotas
 9. Pricing: https://cloud.google.com/bigquery/pricing
+10. Google Cloud SDK: https://docs.cloud.google.com/sdk/docs/install-sdk
 
-## Direct Load Files to GCS
-**NOTES FROM DE ZOOMCAMP REPO**: Quick hack to load files directly to GCS, without Airflow. Downloads csv files from https://nyc-tlc.s3.amazonaws.com/trip+data/ and uploads them to your Cloud Storage Account as parquet files.
+## Load Files to GCS
+### Quick Hack (NOTES FROM DE ZOOMCAMP REPO)
+Quick hack to load files directly to GCS, without Airflow. Downloads csv files from https://nyc-tlc.s3.amazonaws.com/trip+data/ and uploads them to your Cloud Storage Account as parquet files.
 
 Install pre-reqs (more info in web_to_gcs.py script). Run: 
 ```python 
@@ -32,11 +34,28 @@ Resources:
 1. https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/03-data-warehouse/extras
 2. https://docs.cloud.google.com/storage/docs/uploading-objects#storage-upload-object-python
 
+### Create Tables in Bigquery
+After file loaded, we can use below SQL code in Bigquery:
+```sql
+-- Create External Table (referring to GCS path)
+CREATE OR REPLACE EXTERNAL TABLE `[proj_id].[dataset_id].yellow_tripdata_external`
+OPTIONS (
+  format = 'PARQUET',
+  uris = ['gs://[bucket_name]/yellow_tripdata_2024-*.parquet']
+);
+
+-- Create a Regular / Materialized Table
+CREATE OR REPLACE TABLE `[proj_id].[dataset_id].yellow_tripdata_2024` 
+AS
+SELECT * 
+FROM `[proj_id].[dataset_id].yellow_tripdata_external`;
+```
+
 ## Machine Learning in Bigquery
 1. Intro: https://docs.cloud.google.com/bigquery/docs/bqml-introduction
 2. Create ML model using SQL: https://docs.cloud.google.com/bigquery/docs/create-machine-learning-model
-5. Export model: https://docs.cloud.google.com/bigquery/docs/export-model-tutorial
-5. GenAi in Bigquery: https://docs.cloud.google.com/bigquery/docs/generative-ai-overview
+3. Export model: https://docs.cloud.google.com/bigquery/docs/export-model-tutorial
+4. GenAi in Bigquery: https://docs.cloud.google.com/bigquery/docs/generative-ai-overview
 
 ## Dremel
 Dremel is Google’s internal data analysis and exploration system. It is designed for interactive (i.e. fast) analysis of read-only nested data. Its design builds on ideas from parallel database management systems as well as web search.

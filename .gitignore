@@ -284,3 +284,12 @@ terraform.rc
 # Optional: ignore plan files saved before destroying Terraform configuration
 # Uncomment the line below if you want to ignore planout files.
 # planout
+
+# ADDITIONAL PREVENTION: GCP SDK credentials
+.config/gcloud/
+**/.config/gcloud/
+.config/
+.ssh/
+.env
+*.key
+*.json

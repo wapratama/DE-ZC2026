@@ -176,3 +176,59 @@ Tips to shorter working directory information in the terminal using bash:
 ```bash
 PS1="> "
 ```
+
+## Install GCloud SDK via official Google repo
+
+STEP 1 — Update package list
+```bash
+sudo apt-get update
+```
+
+STEP 2 — Install required dependencies
+```bash
+sudo apt-get install -y \
+  apt-transport-https \
+  ca-certificates \
+  gnupg \
+  curl
+```
+
+STEP 3 — Add Google Cloud SDK GPG key
+```bash
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+| sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+```
+
+STEP 4 — Add Google Cloud SDK repository
+```bash
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] \
+https://packages.cloud.google.com/apt cloud-sdk main" \
+| sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
+```
+
+STEP 5 — Install Google Cloud SDK
+```bash
+sudo apt-get update
+sudo apt-get install -y google-cloud-cli
+```
+
+STEP 6 — Verify installation
+```bash
+gcloud --version
+```
+
+You should see output like: `Google Cloud SDK 4xx.x.x`
+
+STEP 7 — Authenticate (required)
+```bash
+gcloud auth login
+```
+Browser opens → log in → return to terminal.
+
+STEP 8 — Set project
+```bash
+gcloud config set project [YOUR_PROJECT_ID]
+```
+
+
+✅ Happy learning !!!

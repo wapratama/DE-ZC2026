@@ -40,9 +40,25 @@ Note: You will need to use the PARQUET option when creating an external table.
 
 Create an external table using the Yellow Taxi Trip Records. 
 
+```sql
+-- Create External Table (referring to GCS path)
+CREATE OR REPLACE EXTERNAL TABLE `[proj_id].[dataset_id].yellow_tripdata_external`
+OPTIONS (
+  format = 'PARQUET',
+  uris = ['gs://[bucket_name]/yellow_tripdata_2024-*.parquet']
+);
+```
+
 Create a (regular/materialized) table in BQ using the Yellow Taxi Trip Records (do not partition or cluster this table). 
 
 
+```sql
+-- Create a Regular / Materialized Table
+CREATE OR REPLACE TABLE `[proj_id].[dataset_id].yellow_tripdata_2024` 
+AS
+SELECT * 
+FROM `[proj_id].[dataset_id].yellow_tripdata_external`;
+```
 
 ## Question 1. Counting records
 
@@ -53,10 +69,13 @@ What is count of records for the 2024 Yellow Taxi Data?
 - 85,431,289
 
 ### **Answer of Question 1**
+```sql
+-- Count of records for the 2024 (Jan - Jun) from Regular Table
+SELECT COUNT(1) AS total_records
+FROM `[proj_id].[dataset_id].yellow_tripdata_2024`;
+```
 
-![solution_Q01](image/Q01_answer.png)
-
-The answer is **On Progress**
+The answer is **20,332,093**
 
 ## Question 2. Data read estimation
 
@@ -70,28 +89,44 @@ What is the **estimated amount** of data that will be read when this query is ex
 - 0 MB for the External Table and 0MB for the Materialized Table
 
 ### **Answer of Question 2**
+```sql
+-- External Table
+SELECT COUNT(DISTINCT PULocationID)
+FROM `[proj_id].[dataset_id].yellow_tripdata_external`;
 
-![solution_Q02](image/Q02_answer.png)
+-- Reguler / materialized table
+SELECT COUNT(DISTINCT PULocationID)
+FROM `[proj_id].[dataset_id].yellow_tripdata_2024`;
+```
 
-The answer is **On Progress**
+The answer is **0 MB for the External Table and 155.12 MB for the Materialized Table**
 
 ## Question 3. Understanding columnar storage
 
 Write a query to retrieve the PULocationID from the table (not the external table) in BigQuery. Now write a query to retrieve the PULocationID and DOLocationID on the same table.
 
 Why are the estimated number of Bytes different?
-- BigQuery is a columnar database, and it only scans the specific columns requested in the query. Querying two columns (PULocationID, DOLocationID) requires 
-reading more data than querying one column (PULocationID), leading to a higher estimated number of bytes processed.
-- BigQuery duplicates data across multiple storage partitions, so selecting two columns instead of one requires scanning the table twice, 
-doubling the estimated bytes processed.
+- BigQuery is a columnar database, and it only scans the specific columns requested in the query. Querying two columns (PULocationID, DOLocationID) requires reading more data than querying one column (PULocationID), leading to a higher estimated number of bytes processed.
+- BigQuery duplicates data across multiple storage partitions, so selecting two columns instead of one requires scanning the table twice, doubling the estimated bytes processed.
 - BigQuery automatically caches the first queried column, so adding a second column increases processing time but does not affect the estimated bytes scanned.
 - When selecting multiple columns, BigQuery performs an implicit join operation between them, increasing the estimated bytes processed
 
 ### **Answer of Question 3**
+```sql
+-- Select data from Reguler / materialized table
+-- Select PULocationID (one column)
+SELECT PULocationID
+FROM `[proj_id].[dataset_id].yellow_tripdata_2024`;
 
-![solution_Q03](image/Q03_answer.png)
+-- Select PULocationID and DOLocationID (two coloumns)
+SELECT PULocationID, DOLocationID
+FROM `[proj_id].[dataset_id].yellow_tripdata_2024`;
+```
 
-The answer is **On Progress**
+BigQuery is a columnar warehouse, it reads only columns referenced by our query, so querying more columns scans more bytes. Source: https://docs.cloud.google.com/bigquery/docs/storage_overview
+
+
+The answer is **BigQuery is a columnar database, and it only scans the specific columns requested in the query. Querying two columns (PULocationID, DOLocationID) requires reading more data than querying one column (PULocationID), leading to a higher estimated number of bytes processed.**
 
 ## Question 4. Counting zero fare trips
 
@@ -102,10 +137,12 @@ How many records have a fare_amount of 0?
 - 8,333
 
 ### **Answer of Question 4**
-
-![solution_Q04](image/Q04_answer.png)
-
-The answer is **On Progress**
+```sql
+SELECT COUNT(1) AS zero_fare_amount
+FROM `[proj_id].[dataset_id].yellow_tripdata_2024`
+WHERE fare_amount = 0;
+```
+The answer is **8,333**
 
 ## Question 5. Partitioning and clustering
 
@@ -117,10 +154,26 @@ What is the best strategy to make an optimized table in Big Query if your query 
 - Partition by tpep_dropoff_datetime and Partition by VendorID
 
 ### **Answer of Question 5**
+Best practices:
+- Partition by datetime columns (`tpep_dropoff_datetime`) when queries frequently filter on time.
+- Cluster by high-cardinality fields (`VendorID`) when queries sort or order on them.
+This strategy reduces scanned data and improves sort performance.
 
-![solution_Q05](image/Q05_answer.png)
+Sources:
+- https://docs.cloud.google.com/bigquery/docs/partitioned-tables
+- https://docs.cloud.google.com/bigquery/docs/clustered-tables
 
-The answer is **On Progress**
+```sql
+-- Create Partitioned & Clustered Table
+CREATE OR REPLACE TABLE
+`[proj_id].[dataset_id].yellow_tripdata_2024_partitioned`
+PARTITION BY DATE(tpep_dropoff_datetime)
+CLUSTER BY VendorID 
+AS
+SELECT * FROM `[proj_id].[dataset_id].yellow_tripdata_2024`;
+```
+
+The answer is **Partition by tpep_dropoff_datetime and Cluster on VendorID**
 
 ## Question 6. Partition benefits
 
@@ -141,9 +194,21 @@ Choose the answer which most closely matches.
 
 ### **Answer of Question 6**
 
-![solution_Q06](image/Q06_answer.png)
+```sql
+-- Test on Regular Table
+SELECT *
+FROM `[proj_id].[dataset_id].yellow_tripdata_2024`
+WHERE tpep_dropoff_datetime BETWEEN '2024-03-01' AND '2024-03-15'
+ORDER BY VendorID;
 
-The answer is **On Progress**
+-- Test on Partitioned table
+SELECT *
+FROM `[proj_id].[dataset_id].yellow_tripdata_2024_partitioned`
+WHERE tpep_dropoff_datetime BETWEEN '2024-03-01' AND '2024-03-15'
+ORDER BY VendorID;
+```
+
+The answer is **310.24 MB for non-partitioned table and 26.84 MB for the partitioned table**
 
 ## Question 7. External table storage
 
@@ -156,9 +221,9 @@ Where is the data stored in the External Table you created?
 
 ### **Answer of Question 7**
 
-![solution_Q07](image/Q07_answer.png)
+BigQuery external tables reference data stored in Google Cloud Storage (GCS). Source: https://docs.cloud.google.com/bigquery/docs/external-tables
 
-The answer is **On Progress**
+The answer is **GCP Bucket**
 
 ## Question 8. Clustering best practices
 
@@ -167,10 +232,9 @@ It is best practice in Big Query to always cluster your data:
 - False
 
 ### **Answer of Question 8**
+Clustering is helpful only when queries are run on the clustered columns. Clustering every table without use case can sometimes be unnecessary and incur costs with no benefit.
 
-![solution_Q08](image/Q08_answer.png)
-
-The answer is **On Progress**
+The answer is **False**
 
 ## Question 9. Understanding table scans
 
@@ -178,12 +242,11 @@ No Points: Write a `SELECT count(*)` query FROM the materialized table you creat
 
 ### **Answer of Question 9**
 
-![solution_Q09](image/Q09_answer.png)
+```sql
+SELECT COUNT(*)
+FROM `[proj_id].[dataset_id].yellow_tripdata_2024`;
+```
 
-The answer is **On Progress**
-
-## Submitting the solutions
-
-Form for submitting: https://courses.datatalks.club/de-zoomcamp-2026/homework/hw3
-
-Due date: 10 February 2026 06:59 (local time)
+The answer:
+- Byte estimate reflects full table scan since `COUNT(*)` without filters reads all data.
+- This informs us about cost impact of aggregation without filters.

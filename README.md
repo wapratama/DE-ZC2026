@@ -11,10 +11,10 @@ Data Engineering Zoomcamp is a free, project-oriented data engineering training 
 
 ## Homework
 
-* Module 1 (Docker, SQL, and Terraform): **DONE** (*[homework01_solution](Module_01/homework01_solution.md)*)
-* Module 2 (Workflow Orchestration): **DONE** (*[homework02_solution](Module_02/homework02_solution.md)*)
-* Module 3 (Data Warehousing): *On progress, deadline on 10 Feb 2026*
-* Module 4 (Analytics Engineering): *Not Started, deadline on 17 Feb 2026*
+* Module 1 (Docker, SQL, and Terraform): **DONE** ([Solution](Module_01/homework01_solution.md))
+* Module 2 (Workflow Orchestration): **DONE** ([Solution](Module_02/homework02_solution.md))
+* Module 3 (Data Warehousing): **DONE** ([Solution](Module_03/homework03_solution.md))
+* Module 4 (Analytics Engineering): *On Progress, deadline on 17 Feb 2026*
 * Module 5 (Data Platform): *Not Started, deadline on 1 Mar 2026*
 * Workshop 1 (Data Ingestion with dlt): *Not Started, deadline on 3 Mar 2026*
 * Module 6 (Batch Processing): *Not Started, deadline on 10 Mar 2026*
@@ -26,6 +26,6 @@ Data Engineering Zoomcamp is a free, project-oriented data engineering training 
 
 ## Acknowledgement
 
-Special thanks for [Alexey Grigorev](https://www.linkedin.com/in/agrigorev/) as Founder of DataTalks.Club and also intructor, all the other Instructors, and to all contributors and sponsors who made this learning experience great, challenging, but also enjoyable for me.
+Special thanks for [Alexey Grigorev](https://www.linkedin.com/in/agrigorev/) as Founder of DataTalks.Club, all the Instructors, contributors, and sponsors who made this learning experience great, challenging, but also enjoyable for all of us.
 
-Thanks also for my learning companion in [Data Enthusiast Community](https://www.linkedin.com/groups/16863051/).
+Big thanks for my learning companion in [Data Enthusiast Community](https://www.linkedin.com/groups/16863051/).
