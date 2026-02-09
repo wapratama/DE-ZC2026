@@ -74,6 +74,7 @@ What is count of records for the 2024 Yellow Taxi Data?
 SELECT COUNT(1) AS total_records
 FROM `[proj_id].[dataset_id].yellow_tripdata_2024`;
 ```
+![Q01_Solution](image/Q01_answer.png)
 
 The answer is **20,332,093**
 
@@ -93,11 +94,15 @@ What is the **estimated amount** of data that will be read when this query is ex
 -- External Table
 SELECT COUNT(DISTINCT PULocationID)
 FROM `[proj_id].[dataset_id].yellow_tripdata_external`;
+```
+![Q02-1_Solution](image/Q02-1_answer.png)
 
+```sql
 -- Reguler / materialized table
 SELECT COUNT(DISTINCT PULocationID)
 FROM `[proj_id].[dataset_id].yellow_tripdata_2024`;
 ```
+![Q02-2_Solution](image/Q02-2_answer.png)
 
 The answer is **0 MB for the External Table and 155.12 MB for the Materialized Table**
 
@@ -117,11 +122,15 @@ Why are the estimated number of Bytes different?
 -- Select PULocationID (one column)
 SELECT PULocationID
 FROM `[proj_id].[dataset_id].yellow_tripdata_2024`;
+```
+![Q03-1_Solution](image/Q03-1_answer.png)
 
+```sql
 -- Select PULocationID and DOLocationID (two coloumns)
 SELECT PULocationID, DOLocationID
 FROM `[proj_id].[dataset_id].yellow_tripdata_2024`;
 ```
+![Q03-2_Solution](image/Q03-2_answer.png)
 
 BigQuery is a columnar warehouse, it reads only columns referenced by our query, so querying more columns scans more bytes. Source: https://docs.cloud.google.com/bigquery/docs/storage_overview
 
@@ -142,6 +151,9 @@ SELECT COUNT(1) AS zero_fare_amount
 FROM `[proj_id].[dataset_id].yellow_tripdata_2024`
 WHERE fare_amount = 0;
 ```
+
+![Q04_Solution](image/Q04_answer.png)
+
 The answer is **8,333**
 
 ## Question 5. Partitioning and clustering
@@ -173,6 +185,7 @@ AS
 SELECT * FROM `[proj_id].[dataset_id].yellow_tripdata_2024`;
 ```
 
+
 The answer is **Partition by tpep_dropoff_datetime and Cluster on VendorID**
 
 ## Question 6. Partition benefits
@@ -196,17 +209,21 @@ Choose the answer which most closely matches.
 
 ```sql
 -- Test on Regular Table
-SELECT *
+SELECT DISTINCT VendorID
 FROM `[proj_id].[dataset_id].yellow_tripdata_2024`
 WHERE tpep_dropoff_datetime BETWEEN '2024-03-01' AND '2024-03-15'
 ORDER BY VendorID;
+```
+![Q06-1_Solution](image/Q06-1_answer.png)
 
+```sql
 -- Test on Partitioned table
-SELECT *
+SELECT DISTINCT VendorID
 FROM `[proj_id].[dataset_id].yellow_tripdata_2024_partitioned`
 WHERE tpep_dropoff_datetime BETWEEN '2024-03-01' AND '2024-03-15'
 ORDER BY VendorID;
 ```
+![Q06-2_Solution](image/Q06-2_answer.png)
 
 The answer is **310.24 MB for non-partitioned table and 26.84 MB for the partitioned table**
 
@@ -246,7 +263,10 @@ No Points: Write a `SELECT count(*)` query FROM the materialized table you creat
 SELECT COUNT(*)
 FROM `[proj_id].[dataset_id].yellow_tripdata_2024`;
 ```
+![Q09_Solution](image/Q09_answer.png)
 
-The answer:
-- Byte estimate reflects full table scan since `COUNT(*)` without filters reads all data.
-- This informs us about cost impact of aggregation without filters.
+The answer: **0 byte**
+
+BigQuery shows **0 B processed** because it does NOT need to scan table data to answer `COUNT(*)` on a materialized table, it uses table metadata instead. BigQuery only scans data when it needs column values, if metadata is enough, it scans nothing.
+
+BigQuery stores metadata that it uses internally to optimize queries. Source: https://docs.cloud.google.com/bigquery/docs/storage_overview
