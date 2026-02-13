@@ -1,0 +1,33 @@
+# dbt Profile Configuration for NYC Taxi Project
+# Save this file as: ~/.dbt/profiles.yml
+
+taxi_rides_ny:
+  target: dev
+  outputs:
+    # Development environment
+    dev:
+      type: postgres
+      host: localhost
+      user: root
+      password: root
+      port: 5432
+      dbname: ny_taxi
+      schema: dbt_dev
+      threads: 4
+      keepalives_idle: 0
+      connect_timeout: 10
+      search_path: public
+      
+    # Production environment
+    prod:
+      type: postgres
+      host: localhost
+      user: root
+      password: root
+      port: 5432
+      dbname: ny_taxi
+      schema: dbt_prod
+      threads: 4
+      keepalives_idle: 0
+      connect_timeout: 10
+      search_path: public

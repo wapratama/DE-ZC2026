@@ -18,6 +18,7 @@ serving_dir
 *.csv
 */keys/*
 variables.tf
+**/taxi_rides_ny/*
 
 # *2. Python gitignore*
 # https://github.com/github/gitignore/blob/main/Python.gitignore
