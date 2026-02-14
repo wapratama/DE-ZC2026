@@ -1,7 +1,7 @@
 **Module 4: Analytics Engineering**
 # Task 3: full, concrete, production-grade Local Setup (dbt + DuckDB) 
 
-For this step-by-step, you can run from **VS Code**. I’ll assume you’re working inside your project workspace (not `$HOME`) and that you want an isolated `uv` environment per module. I’ll include exact commands (use `uv` as we agreed), minimal config files you can copy/paste, and example dbt models/tests that read Parquet and transform it. Follow steps in order.
+For this step-by-step, you can run from **VS Code**. I’ll assume you’re working inside your project workspace (not `$HOME`) and that you want an isolated `uv` environment per module. I’ll include exact commands (use `uv`), minimal config files you can copy/paste, and example dbt models/tests that read Parquet and transform it. Follow steps in order.
 
 ---
 
