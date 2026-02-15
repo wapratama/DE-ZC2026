@@ -37,6 +37,24 @@ If you run `dbt run --select int_trips_unioned`, what models will be built?
 
 ---
 
+#### **Answer of Question 1**
+
+The answer is **`int_trips_unioned` only**
+
+**Explanation**
+
+When you use the **`--select`** (or shorthand **`-s`**) flag in dbt without any additional operators, dbt will **exclusively run the specific model** you have named. 
+
+In your project structure, even though `int_trips_unioned.sql` depends on `stg_green_tripdata` and `stg_yellow_tripdata`, simply selecting the intermediate model will not trigger its parents to run. 
+
+To build other models in the lineage, you would need to use the **`+` operator**, which works as follows:
+
+*   **Upstream Dependencies (`+model`):** If you ran `dbt run --select +int_trips_unioned`, dbt would build the intermediate model **and everything it needs to run** (its parents: `stg_green_tripdata` and `stg_yellow_tripdata`).
+*   **Downstream Dependencies (`model+`):** If you ran `dbt run --select int_trips_unioned+`, dbt would build the intermediate model **and anything else that depends on it** (downstream models like `fct_trips`).
+*   **Both (`+model+`):** Using a double plus sign (or `+` on both sides) allows you to build all upstream and downstream dependencies for that specific model. 
+
+---
+
 ### Question 2. dbt Tests
 
 You've configured a generic test like this in your `schema.yml`:
@@ -62,6 +80,25 @@ What happens when you run `dbt test --select fct_trips`?
 
 ---
 
+#### **Answer of Question 2**
+
+The answer is **dbt will fail the test, returning a non-zero exit code**
+
+**Explanation**
+
+Based on the sources, here is why this happens:
+
+*   **How Generic Tests Work:** Generic tests like `accepted_values` are defined in your `.yml` files to ensure data quality. When you run a test, dbt executes a query designed to find rows that violate your specified logic.
+*   **The Definition of Failure:** In dbt, a test is essentially an assertion in SQL format. If the test query returns **more than zero rows**—meaning it found data that does not meet your criteria (like the new value `6` which is not in the accepted list)—the test is considered a **failure**.
+*   **Execution Result:** When a test fails, dbt will report the error in the terminal and return a **non-zero exit code**. This is a critical feature for automation, as it can be used in CI/CD pipelines to prevent bad data from being merged or promoted.
+
+**Why the other options are incorrect:**
+*   **dbt will skip the test:** dbt tests the data currently residing in your warehouse, not just new or changed code. Even if the model hasn't changed, the test will run against the new data.
+*   **dbt will pass with a warning:** By default, dbt tests are configured to fail on errors. While you can manually configure a test to only issue a "warning" severity, the standard behavior for a violation is a failure. 
+*   **dbt will update the configuration:** dbt does not automatically modify your source code or configuration files based on the data it finds; it is a tool for transforming and testing data according to the rules **you** define.
+
+---
+
 ### Question 3. Counting Records in `fct_monthly_zone_revenue`
 
 After running your dbt project, query the `fct_monthly_zone_revenue` model.
@@ -72,6 +109,17 @@ What is the count of records in the `fct_monthly_zone_revenue` model?
 - 14,120
 - 12,184
 - 15,421
+
+---
+
+#### **Answer of Question 3**
+```sql
+-- Count records
+SELECT COUNT(*) AS cnt
+FROM fct_monthly_zone_revenue;
+```
+
+The answer is **14,120**
 
 ---
 
@@ -88,6 +136,39 @@ Which zone had the highest revenue?
 
 ---
 
+#### **Answer of Question 4**
+```sql
+-- Best performing zone for Green taxis in 2020
+
+with green_2020_revenue as (
+    select 
+        zone,
+        borough,
+        sum(revenue_monthly_total_amount) as total_revenue,
+        sum(total_monthly_trips) as total_trips,
+        avg(revenue_monthly_total_amount) as avg_monthly_revenue
+    from {{ ref('fct_monthly_zone_revenue') }}
+    where service_type = 'Green'
+      and revenue_year = 2020
+    group by zone, borough
+)
+
+select 
+    zone,
+    borough,
+    round(total_revenue::numeric, 2) as total_revenue,
+    total_trips,
+    round(avg_monthly_revenue::numeric, 2) as avg_monthly_revenue,
+    rank() over (order by total_revenue desc) as revenue_rank
+from green_2020_revenue
+order by total_revenue desc
+limit 5
+```
+
+The answer is **East Harlem North**
+
+---
+
 ### Question 5. Green Taxi Trip Counts (October 2019)
 
 Using the `fct_monthly_zone_revenue` table, what is the **total number of trips** (`total_monthly_trips`) for Green taxis in October 2019?
@@ -96,6 +177,23 @@ Using the `fct_monthly_zone_revenue` table, what is the **total number of trips*
 - 350,891
 - 384,624
 - 421,509
+
+
+---
+
+#### **Answer of Question 5**
+```sql
+SELECT 
+    revenue_month,
+    SUM(total_monthly_trips) as total_trips_october_2019
+FROM dbt_prod.fct_monthly_zone_revenue
+WHERE service_type = 'Green'
+  AND revenue_year = 2019
+  AND revenue_month_num = 10
+GROUP BY revenue_month;
+```
+
+The answer is **384,624**
 
 ---
 
@@ -117,9 +215,26 @@ What is the count of records in `stg_fhv_tripdata`?
 
 ---
 
+#### **Answer of Question 6**
+```sql
+FHV record count after filtering
+
+select 
+    count(*) as total_records,
+    count(distinct dispatching_base_num) as unique_bases,
+    min(pickup_datetime) as earliest_pickup,
+    max(pickup_datetime) as latest_pickup,
+    count(distinct pickup_datetime::date) as distinct_days
+from {{ ref('stg_fhv_tripdata') }}
+```
+
+The answer is **43,244,693**
+
+---
+
 ## Submitting the solutions
 
 - Form for submitting: <https://courses.datatalks.club/de-zoomcamp-2026/homework/hw4>
-- Homework deadline on 17 Feb 2026
+- Homework deadline on **17 Feb 2026**
 
 =======

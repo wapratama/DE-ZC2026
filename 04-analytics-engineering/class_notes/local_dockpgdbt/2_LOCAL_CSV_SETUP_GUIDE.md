@@ -570,6 +570,14 @@ done
 echo "All data loaded!"
 ```
 
+```bash
+# Make script executable
+chmod +x data/load_all_data.sh
+
+# Run download
+./data/load_all_data.sh
+```
+
 **Note**: Loading all data takes ~30-60 minutes. For learning purposes, loading 2-3 months is sufficient!
 
 ---
