@@ -1,0 +1,49 @@
+# Schema documentation file for dbt models
+# Location: models/core/schema.yml
+
+version: 2
+
+models:
+  - name: dim_zones
+    description: "Taxi zone dimension table"
+    columns:
+      - name: locationid
+        description: "Primary key - Location ID"
+        tests:
+          - unique
+          - not_null
+      - name: borough
+        description: "NYC Borough"
+      - name: zone
+        description: "Zone name"
+      - name: service_zone
+        description: "Service zone classification"
+
+  - name: fct_trips
+    description: "Fact table combining Green and Yellow taxi trips"
+    columns:
+      - name: service_type
+        description: "Type of service (Green or Yellow)"
+        tests:
+          - accepted_values:
+              values: ['Green', 'Yellow']
+      - name: payment_type
+        description: "Payment method"
+        tests:
+          - accepted_values:
+              values: [1, 2, 3, 4, 5]
+              quote: false
+
+  - name: fct_monthly_zone_revenue
+    description: "Monthly aggregated revenue by zone and service type"
+    columns:
+      - name: revenue_month
+        description: "Month of revenue"
+      - name: service_type
+        description: "Type of service"
+      - name: zone
+        description: "Pickup zone name"
+      - name: total_monthly_trips
+        description: "Total trips in the month"
+      - name: revenue_monthly_total_amount
+        description: "Total revenue for the month"

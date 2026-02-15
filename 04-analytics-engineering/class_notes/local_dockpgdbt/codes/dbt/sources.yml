@@ -1,0 +1,28 @@
+# Source configuration
+# Location: models/staging/sources.yml
+version: 2
+
+sources:
+  - name: staging
+    database: ny_taxi
+    schema: public
+    tables:
+      - name: green_taxi_trips
+        description: "Green taxi trip records from 2019-2020"
+        columns:
+          - name: vendorid
+            description: "Vendor ID"
+          - name: lpep_pickup_datetime
+            description: "Pickup datetime"
+          - name: lpep_dropoff_datetime
+            description: "Dropoff datetime"
+      
+      - name: yellow_taxi_trips
+        description: "Yellow taxi trip records from 2019-2020"
+        columns:
+          - name: vendorid
+            description: "Vendor ID"
+          - name: tpep_pickup_datetime
+            description: "Pickup datetime"
+          - name: tpep_dropoff_datetime
+            description: "Dropoff datetime"

@@ -1,4 +1,3 @@
-# **STATUS: ON PROGRESS**
 # Module 4 Homework: Analytics Engineering with dbt
 
 In this homework, we'll use the dbt project in `04-analytics-engineering/taxi_rides_ny/` to transform NYC taxi data and answer questions by querying the models.
@@ -115,8 +114,8 @@ What is the count of records in the `fct_monthly_zone_revenue` model?
 #### **Answer of Question 3**
 ```sql
 -- Count records
-SELECT COUNT(*) AS cnt
-FROM fct_monthly_zone_revenue;
+SELECT COUNT(*) as total_records
+FROM dbt_prod.fct_monthly_zone_revenue;
 ```
 
 The answer is **14,120**
@@ -164,6 +163,22 @@ from green_2020_revenue
 order by total_revenue desc
 limit 5
 ```
+or
+
+```sql
+SELECT 
+    zone,
+    borough,
+    SUM(revenue_monthly_total_amount) as total_revenue,
+    SUM(total_monthly_trips) as total_trips,
+    ROUND(AVG(revenue_monthly_total_amount)::numeric, 2) as avg_monthly_revenue
+FROM dbt_prod.fct_monthly_zone_revenue
+WHERE service_type = 'Green'
+  AND revenue_year = 2020
+GROUP BY zone, borough
+ORDER BY total_revenue DESC
+LIMIT 10;
+```
 
 The answer is **East Harlem North**
 
@@ -192,6 +207,19 @@ WHERE service_type = 'Green'
   AND revenue_month_num = 10
 GROUP BY revenue_month;
 ```
+or 
+
+```sql
+SELECT 
+    zone,
+    SUM(revenue_monthly_total_amount) as total_revenue
+FROM dbt_prod.fct_monthly_zone_revenue
+WHERE service_type = 'Green'
+  AND revenue_year = 2020
+GROUP BY zone
+ORDER BY total_revenue DESC
+LIMIT 5;
+```
 
 The answer is **384,624**
 
@@ -217,7 +245,7 @@ What is the count of records in `stg_fhv_tripdata`?
 
 #### **Answer of Question 6**
 ```sql
-FHV record count after filtering
+-- FHV record count after filtering
 
 select 
     count(*) as total_records,
@@ -225,16 +253,9 @@ select
     min(pickup_datetime) as earliest_pickup,
     max(pickup_datetime) as latest_pickup,
     count(distinct pickup_datetime::date) as distinct_days
-from {{ ref('stg_fhv_tripdata') }}
+from dbt_prod.stg_fhv_tripdata;
 ```
 
 The answer is **43,244,693**
 
 ---
-
-## Submitting the solutions
-
-- Form for submitting: <https://courses.datatalks.club/de-zoomcamp-2026/homework/hw4>
-- Homework deadline on **17 Feb 2026**
-
-=======

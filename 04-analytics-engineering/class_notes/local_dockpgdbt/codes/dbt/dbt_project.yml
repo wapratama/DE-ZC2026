@@ -1,0 +1,32 @@
+# Project configuration file for dbt
+name: 'taxi_rides_ny'
+version: '1.0.0'
+
+profile: 'taxi_rides_ny'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  taxi_rides_ny:
+    # Staging models (views)
+    staging:
+      +materialized: view
+      +schema: staging
+    
+    # Core models (tables)
+    core:
+      +materialized: table
+      +schema: core
+
+seeds:
+  taxi_rides_ny:
+    +schema: seeds
