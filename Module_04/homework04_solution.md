@@ -118,7 +118,7 @@ SELECT COUNT(*) as total_records
 FROM dbt_prod.fct_monthly_zone_revenue;
 ```
 
-The answer is **14,120**
+The answer is **12,184**
 
 ---
 
