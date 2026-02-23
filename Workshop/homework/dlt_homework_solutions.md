@@ -1,4 +1,4 @@
-# Homework: Build Your Own dlt Pipeline
+# Homework: Build Your Own dlt Pipeline (**ON PROGRESS**)
 
 You've seen how to build a pipeline with a scaffolded source. Now it's your turn to do it from scratch with a **custom API**.
 
@@ -157,12 +157,36 @@ We challenge you to try out the different methods explored in the workshop when 
 - 2024-01-01 to 2024-02-01
 - 2024-06-01 to 2024-07-01
 
+---
+
+#### **Answer of Question 1**
+
+The answer is **answer**
+
+**Explanation**
+
+answer
+
+---
+
 ### Question 2: What proportion of trips are paid with credit card?
 
 - 16.66%
 - 26.66%
 - 36.66%
 - 46.66%
+
+---
+
+#### **Answer of Question 2**
+
+The answer is **answer**
+
+**Explanation**
+
+answer
+
+---
 
 ### Question 3: What is the total amount of money generated in tips?
 
@@ -171,6 +195,17 @@ We challenge you to try out the different methods explored in the workshop when 
 - $8,063.41
 - $10,063.41
 
+---
+
+#### **Answer of Question 3**
+
+The answer is **answer**
+
+**Explanation**
+
+answer
+
+---
 
 ### Resources
 
