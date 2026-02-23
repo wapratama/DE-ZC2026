@@ -14,9 +14,9 @@ Data Engineering Zoomcamp is a free, project-oriented data engineering training 
 * Module 1 (Docker, SQL, and Terraform): **DONE** ([Solution](Module_01/homework01_solution.md))
 * Module 2 (Workflow Orchestration): **DONE** ([Solution](Module_02/homework02_solution.md))
 * Module 3 (Data Warehousing): **DONE** ([Solution](Module_03/homework03_solution.md))
-* Module 4 (Analytics Engineering): *On Progress, deadline on 17 Feb 2026*
-* Module 5 (Data Platform): *Not Started, deadline on 1 Mar 2026*
-* Workshop 1 (Data Ingestion with dlt): *Not Started, deadline on 3 Mar 2026*
+* Module 4 (Analytics Engineering): **DONE** ([Solution](Module_04/homework04_solution.md))
+* Module 5 (Data Platform): *On Progress, deadline on 1 Mar 2026*
+* Workshop 1 (Data Ingestion with dlt): *On Progress, deadline on 3 Mar 2026*
 * Module 6 (Batch Processing): *Not Started, deadline on 10 Mar 2026*
 * Module 7 (Streaming): *Not Started, deadline on 17 Mar 2026*
 
