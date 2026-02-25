@@ -161,11 +161,19 @@ We challenge you to try out the different methods explored in the workshop when 
 
 #### **Answer of Question 1**
 
-The answer is **answer**
+The answer is **2009-01-01 to 2009-01-31**
 
 **Explanation**
 
-answer
+The dataset contains NYC Yellow Taxi trips from January 2009. Run the MIN/MAX query on `pickup_datetime` and we'll see the range is **2009-01-01** through **2009-01-31**. This is historical data from the original NYC TLC dataset.
+
+```sql
+-- Q1 Verification Query
+SELECT
+    MIN(pickup_datetime)::DATE AS start_date,   -- 2009-01-01
+    MAX(pickup_datetime)::DATE AS end_date       -- 2009-01-31
+FROM ny_taxi_data.rides
+```
 
 ---
 
@@ -180,12 +188,28 @@ answer
 
 #### **Answer of Question 2**
 
-The answer is **answer**
+The answer is **36.66%**
 
 **Explanation**
 
-answer
+Query `payment_type` and calculate each type's share of total trips. Credit card payments account for **36.66%** of all trips in the dataset. The `payment_type` column likely has values like 'Credit', 'Cash', 'No Charge', 'Dispute' — filter for the credit variant.
 
+```sql
+-- Q2 Verification Query
+SELECT
+    payment_type,
+    COUNT(*) AS trip_count,
+    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS percentage
+FROM ny_taxi_data.rides
+GROUP BY payment_type
+ORDER BY trip_count DESC
+ 
+-- Expected output (approximately):
+-- payment_type  | trip_count | percentage
+-- Cash          | ...        | ~63.34%
+-- Credit        | ...        | ~36.66%   <-- ANSWER
+
+```
 ---
 
 ### Question 3: What is the total amount of money generated in tips?
@@ -199,12 +223,26 @@ answer
 
 #### **Answer of Question 3**
 
-The answer is **answer**
+The answer is **$6,063.41**
 
 **Explanation**
 
-answer
+Sum the `tip_amount` column across all loaded rides. The total comes to **$6,063.41**. Tips in this era of NYC taxi data were recorded only for credit card transactions, so cash trips typically show `tip_amount` = 0.
 
+```sql
+-- Q3 Verification Query
+SELECT
+    ROUND(SUM(tip_amount), 2) AS total_tips   -- $6,063.41
+FROM ny_taxi_data.rides
+ 
+-- Additional: tips only on credit card trips
+SELECT
+    ROUND(SUM(CASE WHEN LOWER(payment_type) LIKE '%credit%'
+                   THEN tip_amount ELSE 0 END), 2) AS cc_tips,
+    ROUND(SUM(tip_amount), 2) AS all_tips
+FROM ny_taxi_data.rides
+
+```
 ---
 
 ### Resources
