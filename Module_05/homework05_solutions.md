@@ -1,4 +1,4 @@
-# Module 5 Homework: Data Platforms with Bruin (**ON PROGRESS**)
+# Module 5 Homework: Data Platforms with Bruin
 
 In this homework, we'll use Bruin to build a complete data pipeline, from ingestion to reporting.
 
@@ -7,7 +7,7 @@ In this homework, we'll use Bruin to build a complete data pipeline, from ingest
 1. Install Bruin CLI: `curl -LsSf https://getbruin.com/install/cli | sh`
 2. Initialize the zoomcamp template: `bruin init zoomcamp my-pipeline`
 3. Configure your `.bruin.yml` with a DuckDB connection
-4. Follow the tutorial in the [main module README](../../../05-data-platforms/)
+4. Follow the tutorial in the [main module README](..\05-data-platforms\README.md)
 
 After completing the setup, you should have a working NYC taxi data pipeline.
 
@@ -31,9 +31,9 @@ The answer is **`.bruin.yml` and `pipeline/` with `pipeline.yml` and `assets/`**
 **Explanation**
 
 A Bruin project requires a specific hierarchical structure to function correctly:
-- Project Root: At the root level, a Bruin project must contain a .bruin.yml file (sometimes referred to as bruin.yml or brewin.yaml), which defines environments, connections, and secrets. Additionally, the root directory must be initialized so the CLI can navigate the file tree.
-- Pipeline Level: Each project contains one or more pipelines, each separated into its own folder. Inside this folder, a pipeline.yml file is required to define the pipeline's name, schedule, connections, and variables.
-- Asset Level: Within each pipeline folder, there is a dedicated assets/ directory. This directory contains the individual asset files (SQL, Python, YAML, or R) that perform the actual data tasks.
+- Project Root: At the root level, a Bruin project must contain a `.bruin.yml` file, which defines environments, connections, and secrets. Additionally, the root directory must be initialized so the CLI can navigate the file tree.
+- Pipeline Level: Each project contains one or more **pipelines**, each separated into its own folder. Inside this folder, a `pipeline.yml` file is required to define the pipeline's name, schedule, connections, and variables.
+- Asset Level: Within each **pipeline** folder, there is a dedicated `assets/` directory. This directory contains the individual asset files (SQL, Python, YAML, or R) that perform the actual data tasks.
 
 ---
 
@@ -142,7 +142,8 @@ Bruin includes built-in quality checks that we can add directly to our asset def
 Specifically:
 - **`not_null`**: This check is used to ensure that a column does not contain any NULL values. For example, in the NYC taxi data pipeline, you would apply this to the pickup_datetime column to ensure every trip has a valid timestamp.
 - **`unique`**: This check ensures that all values in a column are distinct, which is helpful for ID columns but does not specifically prevent NULLs.
-- **Automatic Execution**: Once these checks are defined in our YAML configuration, Bruin automatically runs them as soon as the asset finishes its execution. If a check fails (e.g., if a NULL is found in a not_null column), it will be flagged in the logs, allowing you to catch the issue early.
+
+**Automatic Execution**: Once these checks are defined in our YAML configuration, Bruin automatically runs them as soon as the asset finishes its execution. If a check fails (e.g., if a NULL is found in a not_null column), it will be flagged in the logs, allowing you to catch the issue early.
 
 ---
 

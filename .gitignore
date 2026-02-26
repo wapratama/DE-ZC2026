@@ -304,3 +304,7 @@ terraform.rc
 logs/runs
 logs/*.log
 *.py[cod]
+
+# Other 
+**/tmp/*
+**/temp/*
