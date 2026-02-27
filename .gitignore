@@ -299,6 +299,17 @@ terraform.rc
 *.json
 *.db
 
+# DuckDB database files — large binary, no point versioning
+*.duckdb
+*.duckdb.wal
+
+# dlt pipeline state
+.dlt/
+
+# VS Code / Cursor local settings
+.vscode/settings.json
+.vscode/mcp.json
+
 # Bruin
 .bruin.yml
 logs/runs
@@ -306,6 +317,5 @@ logs/*.log
 *.py[cod]
 
 # Other
-.vscode/mcp.json 
 **/tmp/*
 **/temp/*
