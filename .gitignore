@@ -305,6 +305,7 @@ logs/runs
 logs/*.log
 *.py[cod]
 
-# Other 
+# Other
+.vscode/mcp.json 
 **/tmp/*
 **/temp/*

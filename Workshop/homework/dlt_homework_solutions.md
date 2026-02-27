@@ -1,4 +1,4 @@
-# Homework: Build Your Own dlt Pipeline (**ON PROGRESS**)
+# Homework: Build Your Own dlt Pipeline
 
 You've seen how to build a pipeline with a scaffolded source. Now it's your turn to do it from scratch with a **custom API**.
 
