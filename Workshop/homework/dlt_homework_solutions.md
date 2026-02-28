@@ -1,13 +1,5 @@
 # Homework: Build Your Own dlt Pipeline
 
-You've seen how to build a pipeline with a scaffolded source. Now it's your turn to do it from scratch with a **custom API**.
-
-## Workshop Content
-
-* [Workshop README](README.md)
-* [dlt Pipeline Overview Notebook (Google Colab)](https://colab.research.google.com/github/anair123/data-engineering-zoomcamp/blob/workshop/dlt_2026/cohorts/2026/workshops/dlt/dlt_Pipeline_Overview.ipynb)
-* [Workshop registration page](https://luma.com/hzis1yzp)
-
 ## The Challenge
 
 For this homework, build a dlt pipeline that loads NYC taxi trip data from a custom API into DuckDB and then answer some questions using the loaded data.
@@ -161,19 +153,28 @@ We challenge you to try out the different methods explored in the workshop when 
 
 #### **Answer of Question 1**
 
-The answer is **2009-01-01 to 2009-01-31**
+The answer is **2009-06-01 to 2009-07-01**
 
 **Explanation**
 
-The dataset contains NYC Yellow Taxi trips from January 2009. Run the MIN/MAX query on `pickup_datetime` and we'll see the range is **2009-01-01** through **2009-01-31**. This is historical data from the original NYC TLC dataset.
+- **dlt Dashboard**: Run the MIN/MAX query on `pickup_datetime` and `dropoff_date_time` and we'll see the date range.
 
-```sql
--- Q1 Verification Query
-SELECT
-    MIN(pickup_datetime)::DATE AS start_date,   -- 2009-01-01
-    MAX(pickup_datetime)::DATE AS end_date       -- 2009-01-31
-FROM ny_taxi_data.rides
-```
+  ```sql
+  -- Q1 Verification Query
+  SELECT
+      MIN(trip_pickup_date_time)::DATE AS first_pickup_date,
+      MAX(trip_pickup_date_time)::DATE AS last_pickup_date,
+      MIN(trip_dropoff_date_time)::DATE AS first_dropoff_date,
+      MAX(trip_dropoff_date_time)::DATE AS last_dropoff_date,
+  FROM "trips"
+  ```
+  ![Q01.1](image/dltdashboard_q1.png)
+
+- **dlt MCP Server**: Run "What is the start date and end date of the trips dataset?"
+
+  ![Q01.2](image/dltmcp_q1.png)
+
+
 
 ---
 
@@ -188,28 +189,28 @@ FROM ny_taxi_data.rides
 
 #### **Answer of Question 2**
 
-The answer is **36.66%**
+The answer is **26.66%**
 
 **Explanation**
 
-Query `payment_type` and calculate each type's share of total trips. Credit card payments account for **36.66%** of all trips in the dataset. The `payment_type` column likely has values like 'Credit', 'Cash', 'No Charge', 'Dispute' — filter for the credit variant.
+- **dlt Dashboard**: Query `payment_type` and calculate each type's share of total trips.
 
-```sql
--- Q2 Verification Query
-SELECT
-    payment_type,
-    COUNT(*) AS trip_count,
-    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS percentage
-FROM ny_taxi_data.rides
-GROUP BY payment_type
-ORDER BY trip_count DESC
- 
--- Expected output (approximately):
--- payment_type  | trip_count | percentage
--- Cash          | ...        | ~63.34%
--- Credit        | ...        | ~36.66%   <-- ANSWER
+  ```sql
+  -- Q2 Verification Query
+  SELECT
+      payment_type,
+      COUNT(*) AS trip_count,
+      ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS percentage
+  FROM "trips"
+  GROUP BY payment_type
+  ORDER BY trip_count DESC
+  ```
+  ![Q02.1](image/dltdashboard_q2.png)
 
-```
+- **dlt MCP Server**: Run "What proportion of trips are paid with credit card in trips dataset?"
+
+  ![Q02.2](image/dltmcp_q2.png)
+
 ---
 
 ### Question 3: What is the total amount of money generated in tips?
@@ -227,25 +228,27 @@ The answer is **$6,063.41**
 
 **Explanation**
 
-Sum the `tip_amount` column across all loaded rides. The total comes to **$6,063.41**. Tips in this era of NYC taxi data were recorded only for credit card transactions, so cash trips typically show `tip_amount` = 0.
+- **dlt Dashboard**: Sum the tip amount (`tip_amt`) column across all loaded rides or for each `payment_type`. Credit type will show amount > 0 and other trips typically show 0.
 
-```sql
--- Q3 Verification Query
-SELECT
-    ROUND(SUM(tip_amount), 2) AS total_tips   -- $6,063.41
-FROM ny_taxi_data.rides
- 
--- Additional: tips only on credit card trips
-SELECT
-    ROUND(SUM(CASE WHEN LOWER(payment_type) LIKE '%credit%'
-                   THEN tip_amount ELSE 0 END), 2) AS cc_tips,
-    ROUND(SUM(tip_amount), 2) AS all_tips
-FROM ny_taxi_data.rides
+  ```sql
+  -- Q3 Verification Query
+  SELECT
+      payment_type,
+      ROUND(SUM(tip_amt), 2) AS total_tips
+  FROM "trips"
+  GROUP BY payment_type
+  ORDER BY total_tips DESC
+  ```
+  ![Q03.1](image/dltdashboard_q3.png)
 
-```
+- **dlt MCP Server**: Run "What is the total amount of money generated in tips for this trips dataset?"
+
+  ![Q03.2](image/dltmcp_q3.png)
+
+
 ---
 
-### Resources
+## Resources
 
 | Resource | Link |
 |----------|------|
@@ -254,11 +257,6 @@ FROM ny_taxi_data.rides
 | dlt Documentation | [dlthub.com/docs](https://dlthub.com/docs) |
 
 ---
-
-## Submitting the solutions
-
-- Form for submitting: https://courses.datatalks.club/de-zoomcamp-2026/homework/dlt
-- Deadline: **3 Mar 2026**
 
 ## Tips
 
