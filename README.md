@@ -17,8 +17,8 @@ Data Engineering Zoomcamp is a free, project-oriented data engineering training 
 * Module 4 (Analytics Engineering): **DONE** ([Solution](Module_04/homework04_solution.md))
 * Module 5 (Data Platform): **DONE** ([Solution](Module_05/homework05_solution.md))
 * Workshop 1 (Data Ingestion with dlt): **DONE** ([Solution](Workshop/homework/dlt_homework_solutions.md))
-* Module 6 (Batch Processing): *On Progress, deadline on 10 Mar 2026*
-* Module 7 (Streaming): *Not Started, deadline on 17 Mar 2026*
+* Module 6 (Batch Processing): **DONE** ([Solution](Module_06/homework06_solution.md))
+* Module 7 (Streaming): *On Progress, deadline on 17 Mar 2026*
 
 ## Final Project
 
@@ -29,3 +29,9 @@ Data Engineering Zoomcamp is a free, project-oriented data engineering training 
 Special thanks for [Alexey Grigorev](https://www.linkedin.com/in/agrigorev/) as Founder of DataTalks.Club, all the Instructors, contributors, and sponsors who made this learning experience great, challenging, but also enjoyable for all of us.
 
 Big thanks for my learning companion in [Data Enthusiast Community](https://www.linkedin.com/groups/16863051/).
+
+*For your information, some markdown file (README & others), and some code in my repo are created with the help of AI (ChatGPT, Claude, and/or Gemini) using some references from DE Zoomcamp repo and some adjustment from me. For your main references, please visit the main Data Engineering Zoomcamp [Repository](https://github.com/DataTalksClub/data-engineering-zoomcamp)*
+
+**Thanks for your visit**
+
+**Keep Learning!!!**

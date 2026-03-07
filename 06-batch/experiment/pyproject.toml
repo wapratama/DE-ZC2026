@@ -1,0 +1,13 @@
+[project]
+name = "experiment"
+version = "0.1.0"
+description = "DE Zoomcamp 2026 - Module 6 Batch Processing"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "ipykernel>=7.2.0",
+    "jupyter>=1.1.1",
+    "pandas>=3.0.1",
+    "pyarrow>=23.0.1",
+    "pyspark>=4.1.1",
+]

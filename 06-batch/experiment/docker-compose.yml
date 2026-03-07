@@ -1,0 +1,38 @@
+# docker-compose.yml
+services:
+  spark:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${COMPOSE_PROJECT_NAME}
+    
+    # ── Port mappings ──────────────────────────────────────────────────────────
+    ports:
+      - "4040:4040"   # Spark UI (jobs, stages, storage, executors)
+      - "8888:8888"   # Jupyter Notebook (if you use it)
+    
+    # ── Mount local folders into the container ────────────────────────────────
+    volumes:
+      - ./src:/app/src           # your Python scripts
+      - ./data:/app/data         # parquet + CSV data files
+      - ./output:/app/output     # Spark writes output here
+    
+    # ── Environment variables ─────────────────────────────────────────────────
+    environment:
+      - PYSPARK_PYTHON=/app/.venv/bin/python
+      - PYSPARK_DRIVER_PYTHON=/app/.venv/bin/python
+      - JAVA_HOME=/usr/lib/jvm/default-java
+      - SPARK_DRIVER_MEMORY=${SPARK_DRIVER_MEMORY}
+    
+    # ── Resource limits (adjust to your machine) ──────────────────────────────
+    deploy:
+      resources:
+        limits:
+          memory: 4g        # Give Spark at least 2–4 GB RAM
+    
+    # ── Keep the container alive ──────────────────────────────────────────────
+    stdin_open: true
+    tty: true
+    
+    # ── Working directory inside the container ────────────────────────────────
+    working_dir: /app
