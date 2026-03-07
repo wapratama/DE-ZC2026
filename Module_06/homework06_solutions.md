@@ -32,7 +32,7 @@ The answer is **Spark 4.4.1**
 Follow these steps:
 1. Installation and Prerequisites: Based on the course material, to install Spark and PySpark and retrieve the version, you can check it [here](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/06-batch/setup).
     
-    For me, I am using docker and operate everything inside it. You can check and follow the step by step from my `experiment` folder [here](06-batch\experiment\README.md).
+    For me, I am using docker and operate everything inside it. You can check and follow the step by step from my `experiment` folder [here](../06-batch/experiment/README.md)
 2. Creating a Local Spark Session
 To run PySpark and initialize a session, you can use the following Python code in a Jupyter notebook or script:
     ```python
@@ -80,7 +80,7 @@ Follow these steps:
 2. Repartition: To change the number of partitions to 4, use the repartition() method: `df = df.repartition(4)`. This distributes the data across the cluster (or local threads) to enable parallel processing.
 3. Save to Parquet: Use the `write.parquet()` method to save the resulting Dataframe. This will create a directory containing the partition files, each ending with the `.snappy.parquet` extension.
 
-Check on my [`homework_06.ipynb`](06-batch\experiment\src\homework_06.ipynb).
+Check on my [`homework_06.ipynb`](../06-batch/experiment/src/homework_06.ipynb).
 
 ---
 
@@ -107,7 +107,7 @@ Calculation Method:
 1. Using PySpark Dataframe API: This uses the `to_date()` function and the `filter()` transformation.
 2. Using Spark SQL: This follows the standard SQL practice to query data like a relational table.
 
-Check on my [`homework_06.ipynb`](06-batch\experiment\src\homework_06.ipynb).
+Check on my [`homework_06.ipynb`](../06-batch/experiment/src/homework_06.ipynb).
 
 ---
 
@@ -133,7 +133,7 @@ Methodology using Spark
 2. Conversion to Hours: Using PySpark functions, we would calculate the difference in seconds (often by casting to a long/timestamp or using `unix_timestamp`) and divide by 3600.
 3. Find the Maximum: We would then apply the `max()` action, which is described in the sources as an operation that "triggers" the execution of the transformation graph
 
-Check on my [`homework_06.ipynb`](06-batch\experiment\src\homework_06.ipynb).
+Check on my [`homework_06.ipynb`](../06-batch/experiment/src/homework_06.ipynb).
 
 ---
 
@@ -192,6 +192,6 @@ Actually there are three zones with the same trip count amount of 1:
 - Arden Heights
 - Eltingville/Annadale/Prince's Bay
 
-Check on my [`homework_06.ipynb`](06-batch\experiment\src\homework_06.ipynb).
+Check on my [`homework_06.ipynb`](../06-batch/experiment/src/homework_06.ipynb).
 
 ---

@@ -344,7 +344,7 @@ jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root
 
 ## STEP 10 — Explore the Data and Finish the Homework
 
-Run Jupyter (then open http://localhost:8888) and create [`homework_06.ipynb`](06-batch\experiment\src\homework_06.ipynb)
+Run Jupyter (then open http://localhost:8888) and create your notebook. For example, check on my [`homework_06.ipynb`](../06-batch/experiment/src/homework_06.ipynb).
 
 ---
 
