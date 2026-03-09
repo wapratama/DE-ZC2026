@@ -319,5 +319,3 @@ logs/*.log
 # Other
 **/tmp/*
 **/temp/*
-Module_07/*
-07-streaming/*

@@ -6,7 +6,7 @@ This repo is my learning journey and repositories for **Data Engineering Zoomcam
 
 Data Engineering Zoomcamp is a free, project-oriented data engineering training run by DataTalks.Club. It’s designed to take learners from fundamentals to building production-grade data pipelines using current industry tools and techniques. Check the [website](https://datatalks.club/docs/courses/data-engineering-zoomcamp/) and course [Github repo](https://github.com/DataTalksClub/data-engineering-zoomcamp) for detailed information.
 
-![Course Syllabus](https://raw.githubusercontent.com/DataTalksClub/data-engineering-zoomcamp/main/images/architecture/arch_v4_workshops.jpg)
+![Course Syllabus](arch_v5_workshops.png)
 *Course Syllabus*
 
 ## Homework
