@@ -1,230 +1,348 @@
-# [DRAFT] Homework
+# Homework
 
-In this homework, we're going to learn about streaming with PyFlink.
+In this homework, we'll practice streaming with Kafka (Redpanda) and PyFlink.
 
-Instead of Kafka, we will use Red Panda, which is a drop-in
-replacement for Kafka. It implements the same interface, 
-so we can use the Kafka library for Python for communicating
-with it, as well as use the Kafka connector in PyFlink.
+We use Redpanda, a drop-in replacement for Kafka. It implements the same
+protocol, so any Kafka client library works with it unchanged.
 
-For this homework we will be using the Taxi data:
-- Green 2019-10 data from [here](https://github.com/DataTalksClub/nyc-tlc-data/releases/download/green/green_tripdata_2019-10.csv.gz)
+For this homework we will be using Green Taxi Trip data from October 2025:
+[green_tripdata_2025-10.parquet](https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_2025-10.parquet)
 
 
-## Setup
+## Question 1. Redpanda version
 
-We need:
-
-- Red Panda
-- Flink Job Manager
-- Flink Task Manager
-- Postgres
-
-It's the same setup as in the [pyflink module](../../../07-streaming/pyflink/), so go there and start docker-compose:
+Run `rpk version` inside the Redpanda container:
 
 ```bash
-cd ../../../07-streaming/pyflink/
-docker-compose up
+docker exec -it workshop-redpanda-1 rpk version
 ```
 
-(Add `-d` if you want to run in detached mode)
+What version of Redpanda are you running?
 
-Visit http://localhost:8081 to see the Flink Job Manager
+### **Answer of Question 1**
 
-Connect to Postgres with pgcli, pg-admin, [DBeaver](https://dbeaver.io/) or any other tool.
+The answer is **rpk version: v25.3.9**
 
-The connection credentials are:
+## Question 2. Sending data to Redpanda
 
-- Username `postgres`
-- Password `postgres`
-- Database `postgres`
-- Host `localhost`
-- Port `5432`
-
-With pgcli, you'll need to run this to connect:
+Create a topic called `green-trips`:
 
 ```bash
-pgcli -h localhost -p 5432 -u postgres -d postgres
+docker exec -it workshop-redpanda-1 rpk topic create green-trips
 ```
 
-Run these query to create the Postgres landing zone for the first events and windows:
+Now write a producer to send the green taxi data to this topic.
 
-```sql 
-CREATE TABLE processed_events (
-    test_data INTEGER,
-    event_timestamp TIMESTAMP
-);
+Read the parquet file and keep only these columns:
 
-CREATE TABLE processed_events_aggregated (
-    event_hour TIMESTAMP,
-    test_data INTEGER,
-    num_hits INTEGER 
-);
-```
+- `lpep_pickup_datetime`
+- `lpep_dropoff_datetime`
+- `PULocationID`
+- `DOLocationID`
+- `passenger_count`
+- `trip_distance`
+- `tip_amount`
+- `total_amount`
 
-## Question 1: Redpanda version
+Convert each row to a dictionary and send it to the `green-trips` topic.
+You'll need to handle the datetime columns - convert them to strings
+before serializing to JSON.
 
-Now let's find out the version of redpandas. 
-
-For that, check the output of the command `rpk help` _inside the container_. The name of the container is `redpanda-1`.
-
-Find out what you need to execute based on the `help` output.
-
-What's the version, based on the output of the command you executed? (copy the entire version)
-
-
-## Question 2. Creating a topic
-
-Before we can send data to the redpanda server, we
-need to create a topic. We do it also with the `rpk`
-command we used previously for figuring out the version of 
-redpandas.
-
-Read the output of `help` and based on it, create a topic with name `green-trips` 
-
-What's the output of the command for creating a topic? Include the entire output in your answer.
-
-
-## Question 3. Connecting to the Kafka server
-
-We need to make sure we can connect to the server, so
-later we can send some data to its topics
-
-First, let's install the kafka connector (up to you if you
-want to have a separate virtual environment for that)
-
-```bash
-pip install kafka-python
-```
-
-You can start a jupyter notebook in your solution folder or
-create a script
-
-Let's try to connect to our server:
-
-```python
-import json
-
-from kafka import KafkaProducer
-
-def json_serializer(data):
-    return json.dumps(data).encode('utf-8')
-
-server = 'localhost:9092'
-
-producer = KafkaProducer(
-    bootstrap_servers=[server],
-    value_serializer=json_serializer
-)
-
-producer.bootstrap_connected()
-```
-
-Provided that you can connect to the server, what's the output
-of the last command?
-
-## Question 4: Sending the Trip Data
-
-Now we need to send the data to the `green-trips` topic
-
-Read the data, and keep only these columns:
-
-* `'lpep_pickup_datetime',`
-* `'lpep_dropoff_datetime',`
-* `'PULocationID',`
-* `'DOLocationID',`
-* `'passenger_count',`
-* `'trip_distance',`
-* `'tip_amount'`
-
-Now send all the data using this code:
-
-```python
-producer.send(topic_name, value=message)
-```
-
-For each row (`message`) in the dataset. In this case, `message`
-is a dictionary.
-
-After sending all the messages, flush the data:
-
-```python
-producer.flush()
-```
-
-Use `from time import time` to see the total time 
+Measure the time it takes to send the entire dataset and flush:
 
 ```python
 from time import time
 
 t0 = time()
 
-# ... your code
+# send all rows ...
+
+producer.flush()
 
 t1 = time()
-took = t1 - t0
+print(f'took {(t1 - t0):.2f} seconds')
 ```
 
-How much time did it take to send the entire dataset and flush? 
+How long did it take to send the data?
 
+- 10 seconds
+- 60 seconds
+- 120 seconds
+- 300 seconds
 
-## Question 5: Build a Sessionization Window (2 points)
+### **Answer of Question 2**
 
-Now we have the data in the Kafka stream. It's time to process it.
+The process took only 7 seconds for me, so the nearest answer is **10 seconds**
 
-* Copy `aggregation_job.py` and rename it to `session_job.py`
-* Have it read from `green-trips` fixing the schema
-* Use a [session window](https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/operators/windows/) with a gap of 5 minutes
-* Use `lpep_dropoff_datetime` time as your watermark with a 5 second tolerance
-* Which pickup and drop off locations have the longest unbroken streak of taxi trips?
+**Explanation**
+1. Create the Kafka topic (`green-trips`)
+    ```bash
+    docker exec -it workshop-redpanda-1 rpk topic create green-trips
+    ```
 
+2. Create Producer python file: [Q2 Producer](../07-streaming/workshop/src/consumers/consumer_green.py) (`workshop/src/producers/producer_green.py`)
 
-## Submitting the solutions
+3. Run and check the result
 
-- Form for submitting: https://courses.datatalks.club/de-zoomcamp-2026/homework/hw6
-- Deadline: See the website
+    ```bash
+    uv run python src/producers/producer_green.py
+    ```
+    The time printed in the terminal is our answer.
 
+## Question 3. Consumer - trip distance
 
-## Learning in Public
+Write a Kafka consumer that reads all messages from the `green-trips` topic
+(set `auto_offset_reset='earliest'`).
 
-We encourage everyone to share what they learned. This is called "learning in public".
+Count how many trips have a `trip_distance` greater than 5.0 kilometers.
 
-Read more about the benefits [here](https://alexeyondata.substack.com/p/benefits-of-learning-in-public-and).
+How many trips have `trip_distance` > 5?
 
-### Example post for LinkedIn
+- 6506
+- 7506
+- 8506
+- 9506
 
-```
-🚀 Week 6 of Data Engineering Zoomcamp by @DataTalksClub complete!
+### **Answer of Question 3**
 
-Just finished Module 6 - Streaming with PyFlink. Learned how to:
+The answer is **8506**
 
-✅ Set up Redpanda as a Kafka replacement
-✅ Build streaming data pipelines
-✅ Create topics and produce/consume messages
-✅ Implement sessionization windows
-✅ Process real-time taxi trip data
+**Explanation**
 
-Streaming data in real-time - the future of data engineering!
+Create Consumer File: ([Q3 Consumer](../07-streaming/workshop/src/consumers/consumer_green.py)) (`workshop/src/consumers/consumer_green.py`)
 
-Here's my homework solution: <LINK>
-
-Following along with this amazing free course - who else is learning data engineering?
-
-You can sign up here: https://github.com/DataTalksClub/data-engineering-zoomcamp/
-```
-
-### Example post for Twitter/X
-
-```
-🌊 Module 6 of Data Engineering Zoomcamp done!
-
-- Streaming with PyFlink
-- Redpanda & Kafka concepts
-- Sessionization windows
-- Real-time data processing
-
-My solution: <LINK>
-
-Free course by @DataTalksClub: https://github.com/DataTalksClub/data-engineering-zoomcamp/
+Run:
+```bash
+uv run python src/consumers/consumer_green.py
 ```
 
+The `Trips > 5.0 km` number is our Q3 answer.
+
+> **Note:** `consumer_timeout_ms=10000` makes the script exit automatically instead of hanging forever.
+
+## Part 2: PyFlink (Questions 4-6)
+
+For the PyFlink questions, you'll adapt the workshop code to work with
+the green taxi data. The key differences from the workshop:
+
+- Topic name: `green-trips` (instead of `rides`)
+- Datetime columns use `lpep_` prefix (instead of `tpep_`)
+- You'll need to handle timestamps as strings (not epoch milliseconds)
+
+You can convert string timestamps to Flink timestamps in your source DDL:
+
+```sql
+lpep_pickup_datetime VARCHAR,
+event_timestamp AS TO_TIMESTAMP(lpep_pickup_datetime, 'yyyy-MM-dd HH:mm:ss'),
+WATERMARK FOR event_timestamp AS event_timestamp - INTERVAL '5' SECOND
+```
+
+Before running the Flink jobs, create the necessary PostgreSQL tables
+for your results.
+
+Important notes for the Flink jobs:
+
+- Place your job files in `workshop/src/job/` - this directory is
+  mounted into the Flink containers at `/opt/src/job/`
+- Submit jobs with:
+  `docker exec -it workshop-jobmanager-1 flink run -py /opt/src/job/your_job.py`
+- The `green-trips` topic has 1 partition, so set parallelism to 1
+  in your Flink jobs (`env.set_parallelism(1)`). With higher parallelism,
+  idle consumer subtasks prevent the watermark from advancing.
+- Flink streaming jobs run continuously. Let the job run for a minute
+  or two until results appear in PostgreSQL, then query the results.
+  You can cancel the job from the Flink UI at http://localhost:8081
+- If you sent data to the topic multiple times, delete and recreate
+  the topic to avoid duplicates:
+  `docker exec -it workshop-redpanda-1 rpk topic delete green-trips`
+
+
+## Question 4. Tumbling window - pickup location
+
+Create a Flink job that reads from `green-trips` and uses a 5-minute
+tumbling window to count trips per `PULocationID`.
+
+Write the results to a PostgreSQL table with columns:
+`window_start`, `PULocationID`, `num_trips`.
+
+After the job processes all data, query the results:
+
+```sql
+SELECT PULocationID, num_trips
+FROM <your_table>
+ORDER BY num_trips DESC
+LIMIT 3;
+```
+
+Which `PULocationID` had the most trips in a single 5-minute window?
+
+- 42
+- 74
+- 75
+- 166
+
+### **Answer of Question 4**
+
+The answer is **74**
+
+**Explanation**
+1. Create Table
+    ```bash
+    docker exec -it workshop-postgres-1 psql -U postgres -d postgres -c "
+    CREATE TABLE q4_pickup_counts (
+        window_start TIMESTAMP,
+        PULocationID INTEGER,
+        num_trips BIGINT,
+        PRIMARY KEY (window_start, PULocationID)
+    );
+    "
+    ```
+
+2. Create a flink job ([Q4 Job](../07-streaming/workshop/src/job/q4_tumbling_location.py): `workshop/src/job/q4_tumbling_location.py`) and run:
+
+    ```bash
+    docker exec -it workshop-jobmanager-1 flink run \
+        -py /opt/src/job/q4_tumbling_location.py \
+        --pyFiles /opt/src -d
+    ```
+    If any error related to no file detected, try:
+    ```bash
+    MSYS_NO_PATHCONV=1 \
+        docker exec -it workshop-jobmanager-1 flink run \
+        -py /opt/src/job/q4_tumbling_location.py -d
+    ```
+
+3. Query the table via terminal:
+    ```bash
+    docker exec -it workshop-postgres-1 psql -U postgres -d postgres -c "
+    SELECT PULocationID, num_trips
+    FROM q4_pickup_counts
+    ORDER BY num_trips DESC
+    LIMIT 3;
+    "
+    ```
+
+The top `PULocationID` is **74** with 15 trips.
+
+## Question 5. Session window - longest streak
+
+Create another Flink job that uses a session window with a 5-minute gap
+on `PULocationID`, using `lpep_pickup_datetime` as the event time
+with a 5-second watermark tolerance.
+
+A session window groups events that arrive within 5 minutes of each other.
+When there's a gap of more than 5 minutes, the window closes.
+
+Write the results to a PostgreSQL table and find the `PULocationID`
+with the longest session (most trips in a single session).
+
+How many trips were in the longest session?
+
+- 12
+- 31
+- 51
+- 81
+
+### **Answer of Question 5**
+
+The answer is **81**
+
+**Explanation**
+1. Create Table
+    ```bash
+    docker exec -it workshop-postgres-1 psql -U postgres -d postgres -c "
+    CREATE TABLE q5_session_counts (
+        window_start TIMESTAMP,
+        window_end   TIMESTAMP,
+        PULocationID INTEGER,
+        num_trips    BIGINT,
+        PRIMARY KEY (window_start, window_end, PULocationID)
+    );
+    "
+    ```
+
+2. Create a flink job ([Q5 Job](../07-streaming/workshop/src/job/q5_session_location.py): `workshop/src/job/q5_session_location.py`) and run:
+
+    ```bash
+    docker exec -it workshop-jobmanager-1 flink run \
+        -py /opt/src/job/q5_session_location.py \
+        --pyFiles /opt/src -d
+    ```
+
+    If any error related to no py file detected, try:
+    ```bash
+    MSYS_NO_PATHCONV=1 \
+        docker exec -it workshop-jobmanager-1 flink run \
+        -py /opt/src/job/q5_session_location.py -d
+    ```
+
+3. Query the table via terminal:
+    ```bash
+    docker exec -it workshop-postgres-1 psql -U postgres -d postgres -c "
+    SELECT pulocationid, num_trips, window_start, window_end,
+          EXTRACT(EPOCH FROM (window_end - window_start))/60 AS duration_minutes
+    FROM q5_session_counts
+    ORDER BY num_trips DESC
+    LIMIT 5;
+    "
+    ```
+
+The longest session has 82 trips for me, so the nearest answer is **81** trips.
+
+## Question 6. Tumbling window - largest tip
+
+Create a Flink job that uses a 1-hour tumbling window to compute the
+total `tip_amount` per hour (across all locations).
+
+Which hour had the highest total tip amount?
+
+- 2025-10-01 18:00:00
+- 2025-10-16 18:00:00
+- 2025-10-22 08:00:00
+- 2025-10-30 16:00:00
+
+### **Answer of Question 6**
+
+The answer is **2025-10-16 18:00:00**
+
+**Explanation**
+1. Create Table
+    ```bash
+    docker exec -it workshop-postgres-1 psql -U postgres -d postgres -c "
+    CREATE TABLE q6_tip_by_hour (
+        window_start     TIMESTAMP,
+        total_tip_amount DOUBLE PRECISION,
+        PRIMARY KEY (window_start)
+    );
+    "
+    ```
+
+2. Create a flink job ([Q6 Job](../07-streaming/workshop/src/job/q6_tip_by_hour.py): `workshop/src/job/q6_tip_by_hour.py`) and run:
+
+    ```bash
+    docker exec -it workshop-jobmanager-1 flink run \
+        -py /opt/src/job/q6_tip_by_hour.py \
+        --pyFiles /opt/src -d
+    ```
+
+    If any error related to no py file detected, try:
+    ```bash
+    MSYS_NO_PATHCONV=1 \
+        docker exec -it workshop-jobmanager-1 flink run \
+        -py /opt/src/job/q6_tip_by_hour.py -d
+    ```
+
+3. Query the table via terminal:
+
+    ```bash
+    docker exec -it workshop-postgres-1 psql -U postgres -d postgres -c "
+    SELECT window_start, ROUND(total_tip_amount::numeric, 2) AS total_tip
+    FROM q6_tip_by_hour
+    ORDER BY total_tip_amount DESC
+    LIMIT 3;
+    "
+    ```
+
+The highest total tip amount is 524.96 at **2025-10-16 18:00:00**.
+
+---
