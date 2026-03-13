@@ -18,11 +18,11 @@ Data Engineering Zoomcamp is a free, project-oriented data engineering training 
 * Module 5 (Data Platform): **DONE** ([Solution](Module_05/homework05_solution.md))
 * Workshop 1 (Data Ingestion with dlt): **DONE** ([Solution](Workshop/homework/dlt_homework_solutions.md))
 * Module 6 (Batch Processing): **DONE** ([Solution](Module_06/homework06_solution.md))
-* Module 7 (Streaming): *On Progress, deadline on 17 Mar 2026*
+* Module 7 (Streaming): **DONE** ([Solution](Module_07/homework07_solution.md))
 
 ## Final Project
 
-*Not Started , deadline Attempt 1 on 31 Mar 2026 and Attempt 2 on 21 Apr 2026*
+*On Progress, deadline Attempt 1 on 31 Mar 2026 and Attempt 2 on 21 Apr 2026*
 
 ## Acknowledgement
 
