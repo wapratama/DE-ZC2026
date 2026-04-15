@@ -22,7 +22,9 @@ Data Engineering Zoomcamp is a free, project-oriented data engineering training 
 
 ## Final Project
 
-*On Progress, deadline Attempt 1 on 31 Mar 2026 and Attempt 2 on 21 Apr 2026*
+**DONE**
+- Final Project Repo: [ZC2026-net-zero-tracker](https://github.com/wapratama/ZC2026-net-zero-tracker)
+- Dashboard: [Looker / Data Studio](https://datastudio.google.com/s/jdrJqmRFrSk)
 
 ## Acknowledgement
 
